@@ -1,5 +1,5 @@
 <!-- =====================================================================
-     מגשי פירות נטע סילמן — דף נחיתה
+     מגשי פירות נטע — דף נחיתה
      קובץ זה בנוי במבנה של עמוד אחד (Single Page) עם ניווט לעוגנים (Anchors).
      כל אזור בעמוד מסומן בתגית <section> עם id ייחודי כדי שניתן יהיה
      לערוך/להחליף תוכן בקלות בהמשך.
@@ -9,7 +9,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>מגשי פירות נטע סילמן | מגשי פירות ביתיים לכל אירוע</title>
+  <title>מגשי פירות נטע | מגשי פירות ביתיים לכל אירוע</title>
   <meta name="description" content="מגשי פירות טריים ומעוצבים בעבודת יד, כולל קישוטי תפוחים חקוקים — לימי הולדת, בר/בת מצווה, אירועים והפתעות." />
 
   <!-- גופן עברי עגול ואלגנטי מ-Google Fonts -->
@@ -32,9 +32,9 @@
        ================================================================= -->
   <header class="site-header">
     <div class="container header-inner">
-      <a href="#home" class="logo" aria-label="מגשי פירות נטע סילמן - חזרה לראש העמוד">
+      <a href="#home" class="logo" aria-label="מגשי פירות נטע - חזרה לראש העמוד">
         <span class="logo-emoji" aria-hidden="true">🍇</span>
-        <span class="logo-text">נטע סילמן<br /><small>מגשי פירות</small></span>
+        <span class="logo-text">נטע<br /><small>מגשי פירות</small></span>
       </a>
 
       <!-- כפתור המבורגר למובייל -->
@@ -53,6 +53,7 @@
           <li><a href="#home">בית</a></li>
           <li><a href="#about">אודות</a></li>
           <li><a href="#catalog">קטלוג</a></li>
+          <li><a href="#gallery">גלריה</a></li>
           <li><a href="#order">הזמנה</a></li>
           <li><a href="#contact">יצירת קשר</a></li>
         </ul>
@@ -69,7 +70,7 @@
     <section id="home" class="hero" aria-label="פתיחה">
       <div class="container hero-inner">
         <div class="hero-text">
-          <h1>מגשי פירות נטע סילמן</h1>
+          <h1>מגשי פירות נטע</h1>
           <p class="tagline">מגשי פירות טריים ומרהיבים, בעבודת יד ועם המון אהבה — לכל אירוע ולכל הפתעה 🍓</p>
           <div class="hero-actions">
             <a href="#order" class="btn btn-primary">הזמינו עכשיו</a>
@@ -94,7 +95,7 @@
         <div class="about-text">
           <h2 id="about-title">קצת עליי</h2>
           <p>
-            היי, אני נטע! גרה במבוא חורון ומכינה בבית מגשי פירות טריים ומרהיבים, עם דגש על עיצוב אישי,
+            היי, אני נטע! מכינה בבית מגשי פירות טריים ומרהיבים, עם דגש על עיצוב אישי,
             צבעוניות ותשומת לב לכל פרט — כולל קישוטי תפוחים חקוקים בעבודת יד שהופכים
             כל מגש ליצירת אמנות קטנה. אני מכינה מגשים לימי הולדת, לבר ובת מצווה,
             לאירועים משפחתיים וחברתיים, ולסתם הפתעה מתוקה שתגרום למישהו לחייך.
@@ -149,6 +150,14 @@
             <p class="price">₪280</p>
           </article>
 
+          <!-- כרטיס: תפוח מגולף -->
+          <article class="card">
+            <img class="card-photo" src="img/tray-carved-apple.jpg" alt="תפוח חקוק בעבודת יד עם עיצוב טבעות נישואין ולב" loading="lazy" />
+            <h3>תפוח מגולף</h3>
+            <p>תפוח חקוק בעבודת יד עם כל טקסט, שם או עיצוב שתבחרו - מתנה קטנה ומיוחדת, אפשר גם כתוספת לכל מגש.</p>
+            <p class="price">₪30</p>
+          </article>
+
           <!-- כרטיס: עיצוב אישי -->
           <article class="card card-custom">
             <img class="card-photo" src="img/tray-custom.jpg" alt="תפוח חקוק בעבודת יד עם הקדשה אישית ״מזל טוב״, קישוט לדוגמה למגש בעיצוב אישי" loading="lazy" />
@@ -157,6 +166,27 @@
             <p class="price">מחיר בהתאמה אישית</p>
           </article>
 
+        </div>
+      </div>
+    </section>
+
+    <!-- ===============================================================
+         גלריה — תמונות נוספות של עבודות קודמות
+         =============================================================== -->
+    <section id="gallery" class="gallery" aria-labelledby="gallery-title">
+      <div class="container">
+        <h2 id="gallery-title">גלריה</h2>
+        <p class="section-subtitle">כמה דוגמאות מהעבודות האחרונות שלנו</p>
+
+        <div class="gallery-grid">
+          <img src="img/hero.jpg" alt="מגש פירות עשיר עם ענבים, תותים, קיווי ופירות דרקון" loading="lazy" />
+          <img src="img/gallery-1.jpg" alt="תפוח חקוק בעבודת יד עם עיצוב סמל אישי" loading="lazy" />
+          <img src="img/tray-heart.jpg" alt="מגש פירות בצורת לב עם קישוטים חגיגיים" loading="lazy" />
+          <img src="img/gallery-2.jpg" alt="מגש פירות עם פירות דרקון, מנגו ותפוח חקוק ״מזל טוב״" loading="lazy" />
+          <img src="img/tray-40.jpg" alt="מגש פירות גדול עם תמרים ממולאים באגוזי מלך" loading="lazy" />
+          <img src="img/gallery-3.jpg" alt="מגש פירות עם שני תפוחים חקוקים ופרחי פירות דרקון" loading="lazy" />
+          <img src="img/tray-custom.jpg" alt="תפוח חקוק בעבודת יד עם הקדשה אישית" loading="lazy" />
+          <img src="img/gallery-4.jpg" alt="תפוח חקוק בעבודת יד עם עיצוב סמיילי" loading="lazy" />
         </div>
       </div>
     </section>
@@ -208,6 +238,7 @@
               <option value="מגש 35 ס&quot;מ">מגש 35 ס"מ - ₪280</option>
               <option value="מגש 40 ס&quot;מ">מגש 40 ס"מ - ₪350</option>
               <option value="מגש לב">מגש לב - ₪280</option>
+              <option value="תפוח מגולף">תפוח מגולף - ₪30</option>
               <option value="עיצוב אישי">עיצוב אישי - מחיר בהתאמה אישית</option>
             </select>
           </div>
@@ -243,7 +274,7 @@
               <legend>אופן קבלת ההזמנה <span class="required" aria-hidden="true">*</span></legend>
               <div class="radio-option">
                 <input type="radio" id="delivery-pickup" name="delivery-method" value="pickup" checked />
-                <label for="delivery-pickup">איסוף עצמי ממבוא חורון (ללא עלות)</label>
+                <label for="delivery-pickup">איסוף עצמי (ללא עלות)</label>
               </div>
               <div class="radio-option">
                 <input type="radio" id="delivery-delivery" name="delivery-method" value="delivery" />
@@ -260,7 +291,7 @@
             <label for="delivery-area">אזור המשלוח <span class="required" aria-hidden="true">*</span></label>
             <select id="delivery-area" name="delivery-area">
               <option value="" data-fee="0" disabled selected>בחרו אזור</option>
-              <option value="מבוא חורון והסביבה הקרובה" data-fee="0">מבוא חורון והסביבה הקרובה - ללא עלות נוספת</option>
+              <option value="אזור קרוב" data-fee="0">אזור קרוב - ללא עלות נוספת</option>
               <option value="מודיעין ובנימין" data-fee="20">מודיעין ובנימין - ₪20</option>
               <option value="ירושלים והסביבה" data-fee="35">ירושלים והסביבה - ₪35</option>
               <option value="גוש דן / מרכז הארץ" data-fee="45">גוש דן / מרכז הארץ - ₪45</option>
@@ -351,7 +382,7 @@
               class="contact-link"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="פתיחת שיחת וואטסאפ עם נטע סילמן מגשי פירות (נפתח בחלון חדש)"
+              aria-label="פתיחת שיחת וואטסאפ עם נטע מגשי פירות (נפתח בחלון חדש)"
             >
               <span class="contact-icon" aria-hidden="true">💬</span>
               <span>וואטסאפ</span>
@@ -369,9 +400,9 @@
        ================================================================= -->
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p class="footer-logo">🍇 מגשי פירות נטע סילמן</p>
+      <p class="footer-logo">🍇 מגשי פירות נטע</p>
       <p class="footer-tagline">מגשי פירות בעבודת יד, בכל טעם ולכל אירוע</p>
-      <p class="footer-copy">&copy; <span id="current-year"></span> כל הזכויות שמורות למגשי פירות נטע סילמן</p>
+      <p class="footer-copy">&copy; <span id="current-year"></span> כל הזכויות שמורות למגשי פירות נטע</p>
     </div>
   </footer>
 

@@ -1,5 +1,5 @@
 /* =====================================================================
-   מגשי פירות נטע סילמן — סקריפט האתר
+   מגשי פירות נטע — סקריפט האתר
    כולל: תפריט מובייל, שנת זכויות יוצרים, מעבר איסוף/משלוח בטופס,
    ושליחת ההזמנה ישירות ל-Google Sheets (ראו js/config.js) עם הצגת
    מסך אישור. האתר הוא סטטי לגמרי - אין שרת משלו.
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isDelivery = order.deliveryMethod === 'delivery';
     const deliveryText = isDelivery
       ? `משלוח - ${order.deliveryArea}${order.deliveryFee ? ` (₪${order.deliveryFee})` : ' (ללא עלות נוספת)'}`
-      : 'איסוף עצמי ממבוא חורון';
+      : 'איסוף עצמי';
     document.getElementById('conf-delivery-method').textContent = deliveryText;
 
     const addressRowConf = document.getElementById('conf-address-row');
