@@ -9,7 +9,7 @@
    פשרה מודעת לטובת אחסון חינמי ופשוט, ולא הגנה אמיתית. ***
    ===================================================================== */
 
-const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbz1hZulipfeFOlEDksgC-og1ev51EpxtQhLOsvNfcEHwisiCExe4mkYZAdBRFFhI7IzvQ/exec';
+const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbySksrx1YVWe7sTHe-8Igm1P36AyEd8iHLHFtKeU2XMzoFU4B9RA3Joxcs-EkBzeLo1KA/exec';
 const GOOGLE_SHEETS_SECRET = '63b21bb1b6bae23b30116a7b78e378155530af37d460fb8d';
 
 // סיסמת הכניסה למסך הניהול (admin.html) - שינוי כאן משנה את הסיסמה בפועל.
