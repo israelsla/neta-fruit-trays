@@ -1,0 +1,85 @@
+<!-- =====================================================================
+     עמוד ניהול הזמנות - פרטי - מוגן בסיסמה
+     מציג את כל ההזמנות שהתקבלו מהאתר, מהחדשה לישנה.
+     הסיסמה נבדקת מול השרת (server.js) בכל פעם שנטענים הנתונים.
+     ===================================================================== -->
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ניהול הזמנות | נטע סילמן מגשי פירות</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="admin-body">
+
+  <a class="skip-link" href="#main-content">דלג לתוכן הראשי</a>
+
+  <header class="admin-header">
+    <div class="container admin-header-inner">
+      <h1>ניהול הזמנות - נטע סילמן</h1>
+      <a href="index.html" class="btn btn-secondary">חזרה לאתר</a>
+    </div>
+  </header>
+
+  <main id="main-content" class="container admin-main">
+
+    <!-- ---------- מסך כניסה בסיסמה ---------- -->
+    <section id="login-screen" class="login-screen" aria-labelledby="login-title">
+      <form id="login-form" class="login-form">
+        <h2 id="login-title">כניסה למערכת ההזמנות</h2>
+        <div class="form-row">
+          <label for="admin-password">סיסמה</label>
+          <input type="password" id="admin-password" name="admin-password" autocomplete="current-password" required />
+        </div>
+        <p id="login-error" class="login-error" role="alert" hidden>סיסמה שגויה, נסו שוב.</p>
+        <button type="submit" class="btn btn-primary">כניסה</button>
+      </form>
+    </section>
+
+    <!-- ---------- מסך ההזמנות (מוצג לאחר כניסה מוצלחת) ---------- -->
+    <section id="orders-screen" class="orders-screen" hidden aria-labelledby="orders-title">
+
+      <div class="orders-toolbar">
+        <h2 id="orders-title">כל ההזמנות</h2>
+        <div class="orders-stats" id="orders-stats" aria-live="polite"></div>
+        <button type="button" id="refresh-btn" class="btn btn-secondary">רענון</button>
+        <button type="button" id="logout-btn" class="btn btn-secondary">יציאה</button>
+      </div>
+
+      <p id="no-orders-msg" class="no-orders-msg" hidden>עדיין לא התקבלו הזמנות.</p>
+
+      <div class="table-scroll">
+        <table class="orders-table" id="orders-table">
+          <caption class="sr-only">רשימת כל ההזמנות שהתקבלו, מהחדשה לישנה</caption>
+          <thead>
+            <tr>
+              <th scope="col">אסמכתא</th>
+              <th scope="col">התקבלה בתאריך</th>
+              <th scope="col">שם מלא</th>
+              <th scope="col">טלפון</th>
+              <th scope="col">סוג מגש</th>
+              <th scope="col">כמות</th>
+              <th scope="col">תאריך אירוע</th>
+              <th scope="col">אופן קבלה</th>
+              <th scope="col">כתובת</th>
+              <th scope="col">בקשות מיוחדות</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody">
+            <!-- שורות ההזמנות נוצרות דינמית ע"י admin.js -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!-- =====================================================================
+     מגשי פירות נטע סילמן — דף נחיתה
+     קובץ זה בנוי במבנה של עמוד אחד (Single Page) עם ניווט לעוגנים (Anchors).
+     כל אזור בעמוד מסומן בתגית <section> עם id ייחודי כדי שניתן יהיה
+     לערוך/להחליף תוכן בקלות בהמשך.
+     ===================================================================== -->
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>מגשי פירות נטע סילמן | מגשי פירות ביתיים לכל אירוע</title>
+  <meta name="description" content="מגשי פירות טריים ומעוצבים בעבודת יד, כולל קישוטי תפוחים חקוקים — לימי הולדת, בר/בת מצווה, אירועים והפתעות." />
+
+  <!-- גופן עברי עגול ואלגנטי מ-Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- אייקון טאב פשוט מבוסס אימוג'י -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍎</text></svg>" />
+</head>
+<body>
+
+  <!-- קישור דילוג לנגישות - מאפשר למשתמשי מקלדת/קורא מסך לדלג ישר לתוכן -->
+  <a class="skip-link" href="#main-content">דלג לתוכן הראשי</a>
+
+  <!-- =================================================================
+       HEADER + ניווט ראשי
+       ================================================================= -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#home" class="logo" aria-label="מגשי פירות נטע סילמן - חזרה לראש העמוד">
+        <span class="logo-emoji" aria-hidden="true">🍇</span>
+        <span class="logo-text">נטע סילמן<br /><small>מגשי פירות</small></span>
+      </a>
+
+      <!-- כפתור המבורגר למובייל -->
+      <button
+        id="nav-toggle"
+        class="nav-toggle"
+        aria-expanded="false"
+        aria-controls="primary-nav"
+        aria-label="פתיחת/סגירת תפריט ניווט"
+      >
+        <span class="hamburger" aria-hidden="true"></span>
+      </button>
+
+      <nav id="primary-nav" class="primary-nav" aria-label="ניווט ראשי">
+        <ul>
+          <li><a href="#home">בית</a></li>
+          <li><a href="#about">אודות</a></li>
+          <li><a href="#catalog">קטלוג</a></li>
+          <li><a href="#order">הזמנה</a></li>
+          <li><a href="#contact">יצירת קשר</a></li>
+        </ul>
+        <a href="#order" class="btn btn-primary nav-cta">הזמינו עכשיו</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ===============================================================
+         1. HERO — כותרת ראשית, סלוגן, כפתור הזמנה ואיור מגש פירות
+         =============================================================== -->
+    <section id="home" class="hero" aria-label="פתיחה">
+      <div class="container hero-inner">
+        <div class="hero-text">
+          <h1>מגשי פירות נטע סילמן</h1>
+          <p class="tagline">מגשי פירות טריים ומרהיבים, בעבודת יד ועם המון אהבה — לכל אירוע ולכל הפתעה 🍓</p>
+          <div class="hero-actions">
+            <a href="#order" class="btn btn-primary">הזמינו עכשיו</a>
+            <a href="#catalog" class="btn btn-secondary">לצפייה בקטלוג</a>
+          </div>
+        </div>
+
+        <div class="hero-image" aria-hidden="true">
+          <!-- איור CSS/SVG של מגש פירות - דקורטיבי בלבד, מוסתר מקוראי מסך -->
+          <svg viewBox="0 0 400 340" class="fruit-illustration" role="img" aria-hidden="true" focusable="false">
+            <ellipse cx="200" cy="290" rx="170" ry="26" fill="#C98A4B" opacity="0.25" />
+            <ellipse cx="200" cy="270" rx="160" ry="34" fill="#E7D3AE" stroke="#C98A4B" stroke-width="4" />
+            <ellipse cx="200" cy="264" rx="150" ry="26" fill="#F4E9D2" />
+
+            <circle cx="120" cy="220" r="34" fill="#C33B3B" />
+            <circle cx="120" cy="220" r="34" fill="url(#appleShine)" />
+            <rect x="116" y="186" width="6" height="16" rx="3" fill="#6B7A4F" />
+
+            <circle cx="185" cy="205" r="30" fill="#E8944A" />
+            <circle cx="185" cy="205" r="30" fill="url(#orangeShine)" />
+
+            <circle cx="245" cy="222" r="26" fill="#8FAE55" />
+            <circle cx="245" cy="222" r="26" fill="url(#greenShine)" />
+
+            <g>
+              <ellipse cx="150" cy="170" rx="11" ry="15" fill="#7A3B8C" />
+              <ellipse cx="168" cy="160" rx="11" ry="15" fill="#8A4B9C" />
+              <ellipse cx="186" cy="152" rx="11" ry="15" fill="#7A3B8C" />
+              <ellipse cx="204" cy="150" rx="11" ry="15" fill="#8A4B9C" />
+              <ellipse cx="222" cy="156" rx="11" ry="15" fill="#7A3B8C" />
+            </g>
+
+            <circle cx="290" cy="215" r="24" fill="#D98A94" />
+            <circle cx="90" cy="245" r="18" fill="#E8B4B8" />
+
+            <path d="M300 175 q30 -10 45 15 q-25 5 -45 -15 Z" fill="#6B7A4F" />
+
+            <defs>
+              <radialGradient id="appleShine" cx="35%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.55" />
+                <stop offset="60%" stop-color="#ffffff" stop-opacity="0" />
+              </radialGradient>
+              <radialGradient id="orangeShine" cx="35%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5" />
+                <stop offset="60%" stop-color="#ffffff" stop-opacity="0" />
+              </radialGradient>
+              <radialGradient id="greenShine" cx="35%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5" />
+                <stop offset="60%" stop-color="#ffffff" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===============================================================
+         2. ABOUT — פסקה אישית על נטע
+         =============================================================== -->
+    <section id="about" class="about" aria-labelledby="about-title">
+      <div class="container about-inner">
+        <div class="about-image" aria-hidden="true">
+          <div class="about-blob">
+            <span>🍎🔪</span>
+          </div>
+        </div>
+        <div class="about-text">
+          <h2 id="about-title">קצת עליי</h2>
+          <p>
+            היי, אני נטע! גרה במבוא חורון ומכינה בבית מגשי פירות טריים ומרהיבים, עם דגש על עיצוב אישי,
+            צבעוניות ותשומת לב לכל פרט — כולל קישוטי תפוחים חקוקים בעבודת יד שהופכים
+            כל מגש ליצירת אמנות קטנה. אני מכינה מגשים לימי הולדת, לבר ובת מצווה,
+            לאירועים משפחתיים וחברתיים, ולסתם הפתעה מתוקה שתגרום למישהו לחייך.
+          </p>
+          <p>
+            כל מגש נבנה בקפידה מפירות עונתיים וטריים, עם שילובי צבעים וטעמים שמתאימים
+            לאירוע ולמזמין/ה — כדי שכל מגש יהיה גם יפהפה וגם טעים באמת.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===============================================================
+         3. CATALOG — קטלוג סוגי המגשים
+         =============================================================== -->
+    <section id="catalog" class="catalog" aria-labelledby="catalog-title">
+      <div class="container">
+        <h2 id="catalog-title">הקטלוג שלנו</h2>
+        <p class="section-subtitle">בחרו את המגש המתאים לאירוע שלכם — ואפשר תמיד להתאים אישית</p>
+
+        <div class="catalog-grid">
+
+          <!-- כרטיס: מגש קלאסי -->
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">🍉</div>
+            <h3>מגש קלאסי</h3>
+            <p>מבחר פירות עונתיים טריים, סידור צבעוני ונקי - מתאים לכל אירוע יומיומי או ביקור משפחתי.</p>
+            <p class="price">החל מ-₪120</p>
+          </article>
+
+          <!-- כרטיס: מגש פרימיום -->
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">🍓</div>
+            <h3>מגש פרימיום</h3>
+            <p>מבחר פירות מיוחדים ואקזוטיים, עיצוב עשיר ומרשים במיוחד - מושלם לאירוח חשוב.</p>
+            <p class="price">החל מ-₪220</p>
+          </article>
+
+          <!-- כרטיס: מגש בר/בת מצווה -->
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">🕎</div>
+            <h3>מגש בר/בת מצווה</h3>
+            <p>עיצוב חגיגי עם קישוטי תפוחים חקוקים ואפשרות להוספת שם החוגג/ת ונושא האירוע.</p>
+            <p class="price">החל מ-₪280</p>
+          </article>
+
+          <!-- כרטיס: מגש יום הולדת -->
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">🎂</div>
+            <h3>מגש יום הולדת</h3>
+            <p>מגש צבעוני וחגיגי במיוחד, עם אפשרות להתאמה לגיל ולנושא המסיבה של החוגג/ת.</p>
+            <p class="price">החל מ-₪180</p>
+          </article>
+
+          <!-- כרטיס: עיצוב אישי -->
+          <article class="card card-custom">
+            <div class="card-icon" aria-hidden="true">✨</div>
+            <h3>עיצוב אישי</h3>
+            <p>רוצים משהו ייחודי? נעצב מגש אישי בהתאמה לשם, גיל או נושא לבחירתכם - ספרו לנו ונדאג לשאר.</p>
+            <p class="price">מחיר בהתאמה אישית</p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===============================================================
+         4. ORDER — טופס הזמנה + מסך אישור לאחר שליחה
+         =============================================================== -->
+    <section id="order" class="order" aria-labelledby="order-title">
+      <div class="container order-inner">
+        <h2 id="order-title">הזמינו מגש פירות</h2>
+        <p class="section-subtitle">מלאו את הפרטים ונחזור אליכם לאישור ההזמנה</p>
+
+        <!-- ---------- טופס ההזמנה ---------- -->
+        <form id="order-form" class="order-form" novalidate>
+
+          <div class="form-row">
+            <label for="full-name">שם מלא <span class="required" aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="full-name"
+              name="full-name"
+              autocomplete="name"
+              required
+              aria-required="true"
+            />
+          </div>
+
+          <div class="form-row">
+            <label for="phone">מספר טלפון <span class="required" aria-hidden="true">*</span></label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              autocomplete="tel"
+              placeholder="050-1234567"
+              pattern="0[0-9]{1,2}-?[0-9]{7}"
+              required
+              aria-required="true"
+              aria-describedby="phone-hint"
+            />
+            <small id="phone-hint" class="field-hint">לדוגמה: 050-1234567</small>
+          </div>
+
+          <div class="form-row">
+            <label for="tray-type">סוג מגש <span class="required" aria-hidden="true">*</span></label>
+            <select id="tray-type" name="tray-type" required aria-required="true">
+              <option value="" disabled selected>בחרו סוג מגש</option>
+              <option value="מגש קלאסי">מגש קלאסי - החל מ-₪120</option>
+              <option value="מגש פרימיום">מגש פרימיום - החל מ-₪220</option>
+              <option value="מגש בר/בת מצווה">מגש בר/בת מצווה - החל מ-₪280</option>
+              <option value="מגש יום הולדת">מגש יום הולדת - החל מ-₪180</option>
+              <option value="עיצוב אישי">עיצוב אישי - מחיר בהתאמה אישית</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="quantity">כמות מגשים <span class="required" aria-hidden="true">*</span></label>
+            <input
+              type="number"
+              id="quantity"
+              name="quantity"
+              min="1"
+              max="50"
+              value="1"
+              required
+              aria-required="true"
+            />
+          </div>
+
+          <div class="form-row">
+            <label for="event-date">תאריך האירוע <span class="required" aria-hidden="true">*</span></label>
+            <input
+              type="date"
+              id="event-date"
+              name="event-date"
+              required
+              aria-required="true"
+            />
+          </div>
+
+          <!-- אופן קבלת ההזמנה: איסוף עצמי (ללא עלות) או משלוח (בתוספת תשלום לפי אזור) -->
+          <div class="form-row form-row-wide">
+            <fieldset class="delivery-fieldset">
+              <legend>אופן קבלת ההזמנה <span class="required" aria-hidden="true">*</span></legend>
+              <div class="radio-option">
+                <input type="radio" id="delivery-pickup" name="delivery-method" value="pickup" checked />
+                <label for="delivery-pickup">איסוף עצמי ממבוא חורון (ללא עלות)</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" id="delivery-delivery" name="delivery-method" value="delivery" />
+                <label for="delivery-delivery">משלוח עד הבית (בתוספת תשלום לפי אזור)</label>
+              </div>
+            </fieldset>
+          </div>
+
+          <!--
+            טבלת אזורי משלוח ומחירים - זהו מידע לדוגמה בלבד (PLACEHOLDER)!
+            יש לעדכן את שמות האזורים ואת המחיר (data-fee) בכל <option> בהתאם למחירים האמיתיים.
+          -->
+          <div class="form-row" id="delivery-area-row" hidden>
+            <label for="delivery-area">אזור המשלוח <span class="required" aria-hidden="true">*</span></label>
+            <select id="delivery-area" name="delivery-area">
+              <option value="" data-fee="0" disabled selected>בחרו אזור</option>
+              <option value="מבוא חורון והסביבה הקרובה" data-fee="0">מבוא חורון והסביבה הקרובה - ללא עלות נוספת</option>
+              <option value="מודיעין ובנימין" data-fee="20">מודיעין ובנימין - ₪20</option>
+              <option value="ירושלים והסביבה" data-fee="35">ירושלים והסביבה - ₪35</option>
+              <option value="גוש דן / מרכז הארץ" data-fee="45">גוש דן / מרכז הארץ - ₪45</option>
+              <option value="אזור אחר" data-fee="0">אזור אחר - נתאם זמינות ומחיר בטלפון</option>
+            </select>
+            <small id="delivery-fee-hint" class="field-hint" aria-live="polite"></small>
+          </div>
+
+          <div class="form-row form-row-wide" id="address-row" hidden>
+            <label for="address" id="address-label">כתובת למשלוח <span class="required" aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="address"
+              name="address"
+              autocomplete="street-address"
+              placeholder="עיר, רחוב ומספר בית"
+            />
+          </div>
+
+          <div class="form-row form-row-wide">
+            <label for="special-requests">בקשות מיוחדות / התאמה אישית</label>
+            <textarea
+              id="special-requests"
+              name="special-requests"
+              rows="4"
+              placeholder="לדוגמה: שם החוגג/ת, גיל, נושא המסיבה, אלרגיות או כל בקשה אחרת"
+            ></textarea>
+          </div>
+
+          <div class="form-row form-row-wide">
+            <button type="submit" class="btn btn-primary btn-submit">שליחת הזמנה</button>
+          </div>
+
+          <p class="form-note">שדות המסומנים ב-* הם שדות חובה</p>
+        </form>
+
+        <!-- ---------- מסך אישור הזמנה (מוסתר עד לשליחת הטופס) ---------- -->
+        <div id="order-confirmation" class="order-confirmation" hidden tabindex="-1">
+          <div class="confirmation-card">
+            <div class="confirmation-icon" aria-hidden="true">✅</div>
+            <h3>ההזמנה נשלחה בהצלחה!</h3>
+            <p>תודה <strong id="conf-name"></strong>, קיבלנו את ההזמנה שלך.</p>
+            <p>מספר אסמכתא: <strong id="conf-ref"></strong></p>
+
+            <dl class="confirmation-summary">
+              <div><dt>סוג מגש:</dt><dd id="conf-tray"></dd></div>
+              <div><dt>כמות:</dt><dd id="conf-quantity"></dd></div>
+              <div><dt>תאריך אירוע:</dt><dd id="conf-date"></dd></div>
+              <div><dt>אופן קבלה:</dt><dd id="conf-delivery-method"></dd></div>
+              <div id="conf-address-row"><dt>כתובת:</dt><dd id="conf-address"></dd></div>
+              <div id="conf-requests-row"><dt>בקשות מיוחדות:</dt><dd id="conf-requests"></dd></div>
+            </dl>
+
+            <div class="payment-box">
+              <h4>השלמת תשלום ב-Bit</h4>
+              <p>
+                לצורך אישור ההזמנה, יש להעביר תשלום באמצעות אפליקציית Bit
+                למספר: <strong dir="ltr">055-887-5090</strong>.
+              </p>
+              <p>נטע תיצור איתך קשר טלפוני בהקדם לאישור סופי של ההזמנה והפרטים.</p>
+            </div>
+
+            <button type="button" id="new-order-btn" class="btn btn-secondary">יצירת הזמנה חדשה</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===============================================================
+         5. CONTACT — פרטי יצירת קשר
+         =============================================================== -->
+    <section id="contact" class="contact" aria-labelledby="contact-title">
+      <div class="container">
+        <h2 id="contact-title">יצירת קשר</h2>
+        <p class="section-subtitle">נשמח לשמוע מכם ולענות על כל שאלה</p>
+
+        <ul class="contact-list">
+          <li>
+            <a href="tel:0558875090" class="contact-link">
+              <span class="contact-icon" aria-hidden="true">📞</span>
+              <span dir="ltr">055-887-5090</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://wa.me/972558875090"
+              class="contact-link"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="פתיחת שיחת וואטסאפ עם נטע סילמן מגשי פירות (נפתח בחלון חדש)"
+            >
+              <span class="contact-icon" aria-hidden="true">💬</span>
+              <span>וואטסאפ</span>
+            </a>
+          </li>
+          <!-- אינסטגרם עדיין לא זמין - הקישור יתווסף כאן כשיהיה עמוד פעיל -->
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =================================================================
+       FOOTER
+       ================================================================= -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-logo">🍇 מגשי פירות נטע סילמן</p>
+      <p class="footer-tagline">מגשי פירות בעבודת יד, בכל טעם ולכל אירוע</p>
+      <p class="footer-copy">&copy; <span id="current-year"></span> כל הזכויות שמורות למגשי פירות נטע סילמן</p>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

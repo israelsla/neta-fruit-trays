@@ -1,0 +1,12 @@
+{
+  "name": "neta-silman-fruit-trays",
+  "version": "1.0.0",
+  "description": "אתר ומערכת הזמנות למגשי פירות נטע סילמן",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
