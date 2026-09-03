@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         orderRef,
         submittedAt: new Date().toISOString(),
         fullName: formData.get('full-name').trim(),
-        phone: formData.get('phone').trim(),
+        phone: formatPhoneForStorage(formData.get('phone').trim()),
         trayType: formData.get('tray-type'),
         quantity: formData.get('quantity'),
         eventDate: formData.get('event-date'),
@@ -150,6 +150,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
+  }
+
+  // מוסיפים מקף למספר הטלפון (למשל 050-1234567) כדי ש-Google Sheets
+  // לעולם לא יזהה אותו כמספר טהור וימחק את האפס המוביל
+  function formatPhoneForStorage(phone) {
+    const digits = phone.replace(/\D/g, '');
+    if (digits.length === 10) {
+      return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+    }
+    return phone;
   }
 
   function generateOrderReference() {
