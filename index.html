@@ -150,12 +150,12 @@
             <p class="price">₪280</p>
           </article>
 
-          <!-- כרטיס: תפוח מגולף -->
+          <!-- כרטיס: תוספת מיוחדת - עדיין ללא תמונה אמיתית, יש להחליף כשתישלח תמונה -->
           <article class="card">
-            <img class="card-photo" src="img/tray-carved-apple.jpg" alt="תפוח חקוק בעבודת יד עם עיצוב טבעות נישואין ולב" loading="lazy" />
-            <h3>תפוח מגולף</h3>
-            <p>תפוח חקוק בעבודת יד עם כל טקסט, שם או עיצוב שתבחרו - מתנה קטנה ומיוחדת, אפשר גם כתוספת לכל מגש.</p>
-            <p class="price">₪30</p>
+            <div class="card-photo card-photo-placeholder" aria-hidden="true">🍫🍷</div>
+            <h3>תוספת מיוחדת</h3>
+            <p>רוצים להוסיף למגש עוד משהו מיוחד? שוקולד, יין, או כל תוספת אחרת - ספרו לנו ונתאים בשמחה.</p>
+            <p class="price">מחיר לפי בקשה</p>
           </article>
 
           <!-- כרטיס: עיצוב אישי -->
@@ -238,7 +238,6 @@
               <option value="מגש 35 ס&quot;מ">מגש 35 ס"מ - ₪280</option>
               <option value="מגש 40 ס&quot;מ">מגש 40 ס"מ - ₪350</option>
               <option value="מגש לב">מגש לב - ₪280</option>
-              <option value="תפוח מגולף">תפוח מגולף - ₪30</option>
               <option value="עיצוב אישי">עיצוב אישי - מחיר בהתאמה אישית</option>
             </select>
           </div>
@@ -311,13 +310,43 @@
             />
           </div>
 
+          <!-- כיתוב על התפוח החקוק - בחירת נוסח מוכן, עם/בלי ציור, או התאמה אישית -->
+          <div class="form-row">
+            <label for="apple-message">כיתוב על התפוח (אופציונלי)</label>
+            <select id="apple-message" name="apple-message">
+              <option value="" selected>ללא כיתוב</option>
+              <option value="מזל טוב">מזל טוב</option>
+              <option value="יום הולדת שמח">יום הולדת שמח</option>
+              <option value="יום נישואין שמח">יום נישואין שמח</option>
+              <option value="תתחדשי/תתחדש">תתחדשי / תתחדש</option>
+              <option value="תודה רבה">תודה רבה</option>
+              <option value="רפואה שלמה">רפואה שלמה</option>
+              <option value="באהבה">באהבה</option>
+              <option value="התאמה אישית">התאמה אישית (כתבו את הנוסח למטה)</option>
+            </select>
+          </div>
+
+          <div class="form-row" id="apple-style-row" hidden>
+            <fieldset class="delivery-fieldset">
+              <legend>סגנון הכיתוב</legend>
+              <div class="radio-option">
+                <input type="radio" id="apple-style-drawing" name="apple-style" value="עם ציור" checked />
+                <label for="apple-style-drawing">עם ציור</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" id="apple-style-text" name="apple-style" value="רק כיתוב" />
+                <label for="apple-style-text">רק כיתוב, בלי ציור</label>
+              </div>
+            </fieldset>
+          </div>
+
           <div class="form-row form-row-wide">
-            <label for="special-requests">בקשות מיוחדות / התאמה אישית</label>
+            <label for="special-requests">ברכה מיוחדת / התאמה אישית</label>
             <textarea
               id="special-requests"
               name="special-requests"
               rows="4"
-              placeholder="לדוגמה: שם החוגג/ת, גיל, נושא המסיבה, אלרגיות או כל בקשה אחרת"
+              placeholder="לדוגמה: נוסח מדויק לתפוח, שם החוגג/ת, גיל, נושא המסיבה, אלרגיות או כל בקשה אחרת"
             ></textarea>
           </div>
 
@@ -342,7 +371,8 @@
               <div><dt>תאריך אירוע:</dt><dd id="conf-date"></dd></div>
               <div><dt>אופן קבלה:</dt><dd id="conf-delivery-method"></dd></div>
               <div id="conf-address-row"><dt>כתובת:</dt><dd id="conf-address"></dd></div>
-              <div id="conf-requests-row"><dt>בקשות מיוחדות:</dt><dd id="conf-requests"></dd></div>
+              <div id="conf-apple-row"><dt>כיתוב על התפוח:</dt><dd id="conf-apple"></dd></div>
+              <div id="conf-requests-row"><dt>ברכה מיוחדת:</dt><dd id="conf-requests"></dd></div>
             </dl>
 
             <div class="payment-box">

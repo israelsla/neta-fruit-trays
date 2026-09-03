@@ -130,6 +130,10 @@ document.addEventListener('DOMContentLoaded', () => {
         deliveryCell += `<br /><small>${area} ${fee}</small>`;
       }
 
+      const appleCell = order.appleMessage
+        ? `${escapeHtml(order.appleMessage)} <small>(${escapeHtml(order.appleStyle || 'עם ציור')})</small>`
+        : '-';
+
       row.innerHTML = `
         <td>${escapeHtml(order.orderRef)}</td>
         <td>${formatDateTime(order.submittedAt)}</td>
@@ -140,6 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <td>${formatDate(order.eventDate)}</td>
         <td>${deliveryCell}</td>
         <td class="wrap-cell">${escapeHtml(order.address || '-')}</td>
+        <td class="wrap-cell">${appleCell}</td>
         <td class="wrap-cell">${escapeHtml(order.specialRequests || '-')}</td>
       `;
 

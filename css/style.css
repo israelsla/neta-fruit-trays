@@ -398,6 +398,14 @@ textarea:focus-visible {
   display: block;
 }
 
+.card-photo-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.8rem;
+  background: linear-gradient(160deg, var(--color-peach-bg), var(--color-rose-light));
+}
+
 .card h3 {
   font-size: 1.2rem;
   margin: 18px 22px 8px;

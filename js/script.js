@@ -32,11 +32,26 @@ document.addEventListener('DOMContentLoaded', () => {
     yearEl.textContent = new Date().getFullYear();
   }
 
-  /* ---------- 3. תאריך מינימלי לבחירת תאריך אירוע (מהיום והלאה) ---------- */
+  /* ---------- 3. תאריך מינימלי לבחירת תאריך אירוע (מהיום והלאה) + חסימת שבת ---------- */
   const eventDateInput = document.getElementById('event-date');
   if (eventDateInput) {
     const today = new Date().toISOString().split('T')[0];
     eventDateInput.setAttribute('min', today);
+
+    eventDateInput.addEventListener('change', () => {
+      if (isSaturday(eventDateInput.value)) {
+        eventDateInput.setCustomValidity('לא ניתן להזמין ליום שבת - אנא בחרו תאריך אחר');
+        eventDateInput.reportValidity();
+      } else {
+        eventDateInput.setCustomValidity('');
+      }
+    });
+  }
+
+  function isSaturday(dateString) {
+    if (!dateString) return false;
+    const date = new Date(`${dateString}T00:00:00`);
+    return date.getDay() === 6;
   }
 
   /* ---------- 4. מעבר בין איסוף עצמי למשלוח ---------- */
@@ -79,6 +94,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updateDeliveryUI();
 
+  /* ---------- 4.5 כיתוב על התפוח - הצגת בחירת סגנון רק אם נבחר נוסח ---------- */
+  const appleMessageSelect = document.getElementById('apple-message');
+  const appleStyleRow = document.getElementById('apple-style-row');
+
+  function updateAppleStyleUI() {
+    appleStyleRow.hidden = !appleMessageSelect.value;
+  }
+
+  if (appleMessageSelect) {
+    appleMessageSelect.addEventListener('change', updateAppleStyleUI);
+    updateAppleStyleUI();
+  }
+
   /* ---------- 5. טיפול בטופס ההזמנה ---------- */
   const orderForm = document.getElementById('order-form');
   const confirmationSection = document.getElementById('order-confirmation');
@@ -105,6 +133,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const orderRef = generateOrderReference();
 
+      const appleMessage = formData.get('apple-message') || '';
+      const appleStyle = appleMessage ? formData.get('apple-style') : '';
+
       const orderPayload = {
         orderRef,
         submittedAt: new Date().toISOString(),
@@ -117,16 +148,31 @@ document.addEventListener('DOMContentLoaded', () => {
         deliveryArea: isDelivery ? formData.get('delivery-area') : null,
         deliveryFee: isDelivery ? deliveryFee : 0,
         address: isDelivery ? formData.get('address').trim() : '',
+        appleMessage,
+        appleStyle,
         specialRequests: formData.get('special-requests').trim(),
       };
 
       // נעילת כפתור השליחה כדי למנוע שליחה כפולה בזמן שהבקשה בתהליך
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.textContent = 'שולח...';
+        submitBtn.textContent = 'בודק זמינות...';
       }
 
       try {
+        // בדיקת מכסה יומית - כמה מגשים כבר הוזמנו לאותו תאריך אירוע
+        const alreadyOrdered = await getOrderedQuantityForDate(orderPayload.eventDate);
+        const requestedQty = Number(orderPayload.quantity) || 1;
+
+        if (alreadyOrdered + requestedQty > MAX_TRAYS_PER_DAY) {
+          alert(`מצטערים, ליום ${formatDateHebrew(orderPayload.eventDate)} כבר הוזמנו ${alreadyOrdered} מגשים מתוך המקסימום היומי (${MAX_TRAYS_PER_DAY}). אנא בחרו תאריך אחר, או צרו קשר טלפוני לבדיקת אפשרות מיוחדת.`);
+          return;
+        }
+
+        if (submitBtn) {
+          submitBtn.textContent = 'שולח...';
+        }
+
         const response = await fetch(GOOGLE_SHEETS_URL, {
           method: 'POST',
           // חשוב: text/plain ולא application/json - כדי שהדפדפן לא ישלח
@@ -162,6 +208,22 @@ document.addEventListener('DOMContentLoaded', () => {
     return phone;
   }
 
+  // סופר כמה מגשים כבר הוזמנו לתאריך נתון, כדי לא לחרוג מהמכסה היומית
+  async function getOrderedQuantityForDate(dateString) {
+    const response = await fetch(GOOGLE_SHEETS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'list', secret: GOOGLE_SHEETS_SECRET }),
+    });
+    const data = await response.json();
+    if (!data.success) {
+      throw new Error(data.error || 'שגיאה בבדיקת זמינות');
+    }
+    return data.orders
+      .filter((order) => order.eventDate === dateString)
+      .reduce((sum, order) => sum + (Number(order.quantity) || 0), 0);
+  }
+
   function generateOrderReference() {
     const now = new Date();
     const datePart = [
@@ -194,6 +256,15 @@ document.addEventListener('DOMContentLoaded', () => {
       addressRowConf.hidden = true;
     }
 
+    const appleRow = document.getElementById('conf-apple-row');
+    if (order.appleMessage) {
+      const styleText = order.appleStyle === 'רק כיתוב' ? 'רק כיתוב, בלי ציור' : 'עם ציור';
+      document.getElementById('conf-apple').textContent = `${order.appleMessage} (${styleText})`;
+      appleRow.hidden = false;
+    } else {
+      appleRow.hidden = true;
+    }
+
     const requestsRow = document.getElementById('conf-requests-row');
     if (order.specialRequests) {
       document.getElementById('conf-requests').textContent = order.specialRequests;
@@ -216,6 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
     newOrderBtn.addEventListener('click', () => {
       orderForm.reset();
       updateDeliveryUI();
+      updateAppleStyleUI();
       orderForm.hidden = false;
       confirmationSection.hidden = true;
       orderForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
