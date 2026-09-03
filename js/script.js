@@ -165,7 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const requestedQty = Number(orderPayload.quantity) || 1;
 
         if (alreadyOrdered + requestedQty > MAX_TRAYS_PER_DAY) {
-          alert(`מצטערים, ליום ${formatDateHebrew(orderPayload.eventDate)} כבר הוזמנו ${alreadyOrdered} מגשים מתוך המקסימום היומי (${MAX_TRAYS_PER_DAY}). אנא בחרו תאריך אחר, או צרו קשר טלפוני לבדיקת אפשרות מיוחדת.`);
+          const remaining = Math.max(MAX_TRAYS_PER_DAY - alreadyOrdered, 0);
+          alert(`מצטערים, ליום ${formatDateHebrew(orderPayload.eventDate)} ניתן להזמין עד ${MAX_TRAYS_PER_DAY} מגשים בסה"כ (נותרו ${remaining} מגשים פנויים ליום זה). אנא הקטינו את הכמות, בחרו תאריך אחר, או צרו קשר טלפוני לבדיקת אפשרות מיוחדת.`);
           return;
         }
 
