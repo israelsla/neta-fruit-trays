@@ -48,6 +48,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* מבטיח שתכונת hidden תמיד תעבוד, גם על אלמנטים עם display: flex/grid משלהם */
+[hidden] {
+  display: none !important;
+}
+
 img, svg {
   max-width: 100%;
   display: block;
