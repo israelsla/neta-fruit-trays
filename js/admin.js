@@ -1,9 +1,11 @@
 /* =====================================================================
    מגשי פירות נטע סילמן — סקריפט עמוד ניהול ההזמנות
-   מבקש סיסמה, שולף הזמנות מהשרת (GET /api/orders) ומציג אותן בטבלה.
-   הסיסמה נשמרת בדפדפן הזה (localStorage) כדי שלא יהיה צורך להקליד אותה
-   מחדש בכל כניסה - נוח למשל בטלפון שנטע נכנסת ממנו. היא לא נשלחת לשום
-   מקום חוץ מהשרת עצמו. לחיצה על "יציאה" מוחקת אותה מהדפדפן.
+   האתר סטטי לגמרי (GitHub Pages, ללא שרת) - עמוד זה קורא את ההזמנות
+   ישירות מתוך Google Sheets (ראו js/config.js לכתובת ולסיסמה).
+
+   הסיסמה נבדקת כאן בדפדפן בלבד (לא מול שרת) - זהו מחסום נוחות למניעת
+   הצצה אקראית, לא הגנה אמיתית. היא נשמרת ב-localStorage כדי שלא יהיה
+   צורך להקליד אותה מחדש בכל כניסה - נוח למשל בטלפון שנטע נכנסת ממנו.
    ===================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -26,22 +28,28 @@ document.addEventListener('DOMContentLoaded', () => {
     delivery: 'משלוח',
   };
 
-  // ---------- ניסיון כניסה אוטומטי אם כבר יש סיסמה שמורה בטאב הזה ----------
+  // ---------- ניסיון כניסה אוטומטי אם כבר יש סיסמה שמורה בדפדפן הזה ----------
   const savedPassword = localStorage.getItem('ns-admin-password');
-  if (savedPassword) {
-    tryLoadOrders(savedPassword);
+  if (savedPassword === ADMIN_PASSWORD) {
+    loadOrders();
   }
 
   loginForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const password = passwordInput.value;
-    tryLoadOrders(password);
+
+    if (password !== ADMIN_PASSWORD) {
+      loginError.textContent = 'סיסמה שגויה, נסו שוב.';
+      loginError.hidden = false;
+      return;
+    }
+
+    localStorage.setItem('ns-admin-password', password);
+    loginError.hidden = true;
+    loadOrders();
   });
 
-  refreshBtn.addEventListener('click', () => {
-    const password = localStorage.getItem('ns-admin-password');
-    if (password) tryLoadOrders(password);
-  });
+  refreshBtn.addEventListener('click', loadOrders);
 
   logoutBtn.addEventListener('click', () => {
     localStorage.removeItem('ns-admin-password');
@@ -51,34 +59,49 @@ document.addEventListener('DOMContentLoaded', () => {
     passwordInput.focus();
   });
 
-  async function tryLoadOrders(password) {
+  async function loadOrders() {
     try {
-      const response = await fetch('/api/orders', {
-        headers: { 'x-admin-password': password },
+      const response = await fetch(GOOGLE_SHEETS_URL, {
+        method: 'POST',
+        // חשוב: text/plain ולא application/json - כדי שהדפדפן לא ישלח
+        // בקשת CORS preflight (OPTIONS) ש-Google Apps Script לא תומך בה
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'list', secret: GOOGLE_SHEETS_SECRET }),
       });
 
-      if (response.status === 401) {
-        loginError.hidden = false;
-        localStorage.removeItem('ns-admin-password');
-        return;
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error(data.error || 'שגיאה בטעינת ההזמנות');
       }
 
-      if (!response.ok) {
-        throw new Error('שגיאת שרת');
-      }
-
-      const orders = await response.json();
-
-      localStorage.setItem('ns-admin-password', password);
-      loginError.hidden = true;
       loginScreen.hidden = true;
       ordersScreen.hidden = false;
 
+      const orders = data.orders.map(normalizeEventDate);
+      // החדשות ביותר קודם
+      orders.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
       renderOrders(orders);
     } catch (err) {
-      loginError.textContent = 'שגיאה בהתחברות לשרת. ודאו שהשרת פועל ונסו שוב.';
+      loginError.textContent = 'שגיאה בטעינת ההזמנות. בדקו את החיבור לאינטרנט ונסו שוב.';
       loginError.hidden = false;
     }
+  }
+
+  // Google Sheets מזהה תאריכים כמו "2026-10-15" ומאחסן אותם כתאריך אמיתי,
+  // שחוזר אלינו כחותמת זמן מלאה ב-UTC. כאן ממירים בחזרה לתאריך מקומי
+  // בישראל בפורמט YYYY-MM-DD, כדי שהתאריך המוצג לא "יזוז" יום אחורה.
+  const dateOnlyFormatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Jerusalem',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+
+  function normalizeEventDate(order) {
+    if (order.eventDate && String(order.eventDate).includes('T')) {
+      order.eventDate = dateOnlyFormatter.format(new Date(order.eventDate));
+    }
+    return order;
   }
 
   function renderOrders(orders) {

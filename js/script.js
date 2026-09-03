@@ -1,7 +1,8 @@
 /* =====================================================================
    מגשי פירות נטע סילמן — סקריפט האתר
    כולל: תפריט מובייל, שנת זכויות יוצרים, מעבר איסוף/משלוח בטופס,
-   ושליחת ההזמנה לשרת (server.js) עם הצגת מסך אישור.
+   ושליחת ההזמנה ישירות ל-Google Sheets (ראו js/config.js) עם הצגת
+   מסך אישור. האתר הוא סטטי לגמרי - אין שרת משלו.
    ===================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -102,7 +103,11 @@ document.addEventListener('DOMContentLoaded', () => {
         : null;
       const deliveryFee = selectedAreaOption ? Number(selectedAreaOption.dataset.fee || 0) : 0;
 
+      const orderRef = generateOrderReference();
+
       const orderPayload = {
+        orderRef,
+        submittedAt: new Date().toISOString(),
         fullName: formData.get('full-name').trim(),
         phone: formData.get('phone').trim(),
         trayType: formData.get('tray-type'),
@@ -122,20 +127,22 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       try {
-        const response = await fetch('/api/orders', {
+        const response = await fetch(GOOGLE_SHEETS_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(orderPayload),
+          // חשוב: text/plain ולא application/json - כדי שהדפדפן לא ישלח
+          // בקשת CORS preflight (OPTIONS) ש-Google Apps Script לא תומך בה
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'add', secret: GOOGLE_SHEETS_SECRET, order: orderPayload }),
         });
 
-        if (!response.ok) {
-          throw new Error('שגיאה בשליחת ההזמנה לשרת');
+        const result = await response.json();
+        if (!result.success) {
+          throw new Error(result.error || 'שגיאה בשמירת ההזמנה');
         }
 
-        const result = await response.json();
-        showConfirmation(orderPayload, result.orderRef);
+        showConfirmation(orderPayload, orderRef);
       } catch (err) {
-        alert('אירעה שגיאה בשליחת ההזמנה. ודאו שיש חיבור לשרת ונסו שוב, או צרו קשר טלפוני ישירות.');
+        alert('אירעה שגיאה בשליחת ההזמנה. בדקו את החיבור לאינטרנט ונסו שוב, או צרו קשר טלפוני ישירות.');
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
@@ -143,6 +150,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
+  }
+
+  function generateOrderReference() {
+    const now = new Date();
+    const datePart = [
+      now.getFullYear(),
+      String(now.getMonth() + 1).padStart(2, '0'),
+      String(now.getDate()).padStart(2, '0'),
+    ].join('');
+    const randomPart = Math.floor(1000 + Math.random() * 9000);
+    return `NS-${datePart}-${randomPart}`;
   }
 
   function showConfirmation(order, orderRef) {
