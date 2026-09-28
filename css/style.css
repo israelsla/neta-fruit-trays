@@ -375,6 +375,12 @@ textarea:focus-visible {
   gap: 22px;
 }
 
+.catalog-loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--color-text-soft);
+}
+
 .card {
   background-color: var(--color-white);
   border-radius: var(--radius-md);
@@ -602,6 +608,21 @@ textarea {
   margin: 0;
   color: var(--color-text-soft);
   text-align: left;
+}
+
+.pending-banner {
+  background-color: var(--color-rose-light);
+  border: 1.5px dashed var(--color-rose);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  text-align: right;
+  color: var(--color-olive-dark);
+}
+
+.pending-banner p {
+  margin: 6px 0 0;
+  color: var(--color-text-soft);
 }
 
 .payment-box {

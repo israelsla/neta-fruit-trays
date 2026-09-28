@@ -45,38 +45,60 @@
     <!-- ---------- מסך ההזמנות (מוצג לאחר כניסה מוצלחת) ---------- -->
     <section id="orders-screen" class="orders-screen" hidden aria-labelledby="orders-title">
 
-      <div class="orders-toolbar">
-        <h2 id="orders-title">כל ההזמנות</h2>
-        <div class="orders-stats" id="orders-stats" aria-live="polite"></div>
-        <button type="button" id="refresh-btn" class="btn btn-secondary">רענון</button>
-        <button type="button" id="logout-btn" class="btn btn-secondary">יציאה</button>
+      <!-- מעבר בין ניהול הזמנות לעריכת הקטלוג -->
+      <div class="admin-tabs" role="tablist" aria-label="ניווט ניהול">
+        <button type="button" class="admin-tab is-active" id="tab-orders" role="tab" aria-selected="true" aria-controls="orders-panel">הזמנות</button>
+        <button type="button" class="admin-tab" id="tab-catalog" role="tab" aria-selected="false" aria-controls="catalog-panel">עריכת קטלוג</button>
+        <button type="button" id="logout-btn" class="btn btn-secondary admin-logout">יציאה</button>
       </div>
 
-      <p id="no-orders-msg" class="no-orders-msg" hidden>עדיין לא התקבלו הזמנות.</p>
+      <!-- ---------- פאנל הזמנות ---------- -->
+      <div id="orders-panel" role="tabpanel" aria-labelledby="tab-orders">
+        <div class="orders-toolbar">
+          <h2 id="orders-title">כל ההזמנות</h2>
+          <div class="orders-stats" id="orders-stats" aria-live="polite"></div>
+          <button type="button" id="refresh-btn" class="btn btn-secondary">רענון</button>
+        </div>
 
-      <div class="table-scroll">
-        <table class="orders-table" id="orders-table">
-          <caption class="sr-only">רשימת כל ההזמנות שהתקבלו, מהחדשה לישנה</caption>
-          <thead>
-            <tr>
-              <th scope="col">אסמכתא</th>
-              <th scope="col">התקבלה בתאריך</th>
-              <th scope="col">שם מלא</th>
-              <th scope="col">טלפון</th>
-              <th scope="col">סוג מגש</th>
-              <th scope="col">כמות</th>
-              <th scope="col">תאריך אירוע</th>
-              <th scope="col">אופן קבלה</th>
-              <th scope="col">כתובת</th>
-              <th scope="col">כיתוב על התפוח</th>
-              <th scope="col">ברכה מיוחדת</th>
-            </tr>
-          </thead>
-          <tbody id="orders-tbody">
-            <!-- שורות ההזמנות נוצרות דינמית ע"י admin.js -->
-          </tbody>
-        </table>
+        <p id="no-orders-msg" class="no-orders-msg" hidden>עדיין לא התקבלו הזמנות.</p>
+
+        <div class="table-scroll">
+          <table class="orders-table" id="orders-table">
+            <caption class="sr-only">רשימת כל ההזמנות שהתקבלו, מהחדשה לישנה</caption>
+            <thead>
+              <tr>
+                <th scope="col">סטטוס</th>
+                <th scope="col">אסמכתא</th>
+                <th scope="col">התקבלה בתאריך</th>
+                <th scope="col">שם מלא</th>
+                <th scope="col">טלפון</th>
+                <th scope="col">סוג מגש</th>
+                <th scope="col">כמות</th>
+                <th scope="col">תאריך אירוע</th>
+                <th scope="col">אופן קבלה</th>
+                <th scope="col">כתובת</th>
+                <th scope="col">כיתוב על התפוח</th>
+                <th scope="col">ברכה מיוחדת</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody">
+              <!-- שורות ההזמנות נוצרות דינמית ע"י admin.js -->
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      <!-- ---------- פאנל עריכת קטלוג ---------- -->
+      <div id="catalog-panel" role="tabpanel" aria-labelledby="tab-catalog" hidden>
+        <div class="orders-toolbar">
+          <h2>עריכת הקטלוג</h2>
+          <p class="catalog-edit-hint">שנו מחיר, תיאור, או העלו תמונה חדשה לכל פריט - השינוי יופיע באתר תוך רגע.</p>
+        </div>
+        <div id="catalog-edit-list" class="catalog-edit-list">
+          <!-- כרטיסי עריכה נוצרים דינמית ע"י admin.js -->
+        </div>
+      </div>
+
     </section>
 
   </main>

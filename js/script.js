@@ -54,6 +54,101 @@ document.addEventListener('DOMContentLoaded', () => {
     return date.getDay() === 6;
   }
 
+  function isEventDateSoon(dateString) {
+    if (!dateString) return false;
+    const eventDate = new Date(`${dateString}T00:00:00`);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const daysUntil = Math.round((eventDate - today) / (1000 * 60 * 60 * 24));
+    return daysUntil < AUTO_APPROVE_DAYS;
+  }
+
+  /* ---------- 3.5 טעינת קטלוג דינמית מ-Google Sheets ---------- */
+  // תמונות ברירת מחדל - משמשות כל עוד נטע לא העלתה תמונה משלה דרך הדשבורד
+  const DEFAULT_CATALOG_IMAGES = {
+    'tray-30': 'img/tray-30.jpg',
+    'tray-35': 'img/tray-35.jpg',
+    'tray-40': 'img/tray-40.jpg',
+    'tray-heart': 'img/tray-heart.jpg',
+    'custom': 'img/tray-custom.jpg',
+  };
+
+  const catalogGrid = document.getElementById('catalog-grid');
+  const trayTypeSelect = document.getElementById('tray-type');
+
+  async function loadCatalog() {
+    try {
+      const response = await fetch(GOOGLE_SHEETS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'getCatalog', secret: GOOGLE_SHEETS_SECRET }),
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || 'שגיאה בטעינת הקטלוג');
+      renderCatalog(data.items);
+      renderTrayTypeOptions(data.items);
+    } catch (err) {
+      if (catalogGrid) {
+        catalogGrid.innerHTML = '<p class="catalog-loading">שגיאה בטעינת הקטלוג. נסו לרענן את הדף.</p>';
+      }
+    }
+  }
+
+  function renderCatalog(items) {
+    if (!catalogGrid) return;
+    catalogGrid.innerHTML = '';
+
+    items.forEach((item) => {
+      const article = document.createElement('article');
+      article.className = item.id === 'custom' ? 'card card-custom' : 'card';
+
+      const imageUrl = item.imageUrl || DEFAULT_CATALOG_IMAGES[item.id];
+      const photoHtml = imageUrl
+        ? `<img class="card-photo" src="${escapeHtmlAttr(imageUrl)}" alt="${escapeHtmlAttr(item.name)}" loading="lazy" />`
+        : `<div class="card-photo card-photo-placeholder" aria-hidden="true">🍫🍷</div>`;
+
+      const priceText = /^\d+$/.test(String(item.price).trim())
+        ? `₪${item.price}`
+        : item.price;
+
+      article.innerHTML = `
+        ${photoHtml}
+        <h3>${escapeHtmlText(item.name)}</h3>
+        <p>${escapeHtmlText(item.description)}</p>
+        <p class="price">${escapeHtmlText(priceText)}</p>
+      `;
+      catalogGrid.appendChild(article);
+    });
+  }
+
+  function renderTrayTypeOptions(items) {
+    if (!trayTypeSelect) return;
+    // משאירים רק את אפשרות ברירת המחדל הראשונה, מוחקים אפשרויות ישנות
+    trayTypeSelect.innerHTML = '<option value="" disabled selected>בחרו סוג מגש</option>';
+
+    items
+      .filter((item) => item.id !== 'special-addon')
+      .forEach((item) => {
+        const option = document.createElement('option');
+        option.value = item.name;
+        const priceText = /^\d+$/.test(String(item.price).trim()) ? `₪${item.price}` : item.price;
+        option.textContent = `${item.name} - ${priceText}`;
+        trayTypeSelect.appendChild(option);
+      });
+  }
+
+  function escapeHtmlText(str) {
+    const div = document.createElement('div');
+    div.textContent = str ?? '';
+    return div.innerHTML;
+  }
+
+  function escapeHtmlAttr(str) {
+    return String(str ?? '').replace(/"/g, '&quot;');
+  }
+
+  loadCatalog();
+
   /* ---------- 4. מעבר בין איסוף עצמי למשלוח ---------- */
   const deliveryRadios = document.querySelectorAll('input[name="delivery-method"]');
   const deliveryAreaRow = document.getElementById('delivery-area-row');
@@ -136,6 +231,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const appleMessage = formData.get('apple-message') || '';
       const appleStyle = appleMessage ? formData.get('apple-style') : '';
 
+      // הזמנה לתאריך קרוב (פחות מ-AUTO_APPROVE_DAYS מהיום) דורשת אישור ידני
+      // של נטע; הזמנה רחוקה יותר מאושרת אוטומטית עם השליחה.
+      const status = isEventDateSoon(formData.get('event-date'))
+        ? 'ממתין לאישור'
+        : 'מאושר';
+
       const orderPayload = {
         orderRef,
         submittedAt: new Date().toISOString(),
@@ -151,6 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
         appleMessage,
         appleStyle,
         specialRequests: formData.get('special-requests').trim(),
+        status,
       };
 
       // נעילת כפתור השליחה כדי למנוע שליחה כפולה בזמן שהבקשה בתהליך
@@ -242,6 +344,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('conf-tray').textContent = order.trayType;
     document.getElementById('conf-quantity').textContent = order.quantity;
     document.getElementById('conf-date').textContent = formatDateHebrew(order.eventDate);
+
+    const pendingBanner = document.getElementById('conf-pending-banner');
+    pendingBanner.hidden = order.status !== 'ממתין לאישור';
 
     const isDelivery = order.deliveryMethod === 'delivery';
     const deliveryText = isDelivery

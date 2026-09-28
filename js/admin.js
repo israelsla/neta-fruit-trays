@@ -1,7 +1,7 @@
 /* =====================================================================
    מגשי פירות נטע — סקריפט עמוד ניהול ההזמנות
-   האתר סטטי לגמרי (GitHub Pages, ללא שרת) - עמוד זה קורא את ההזמנות
-   ישירות מתוך Google Sheets (ראו js/config.js לכתובת ולסיסמה).
+   האתר סטטי לגמרי (GitHub Pages, ללא שרת) - עמוד זה קורא/כותב הזמנות
+   וקטלוג ישירות מול Google Sheets (ראו js/config.js לכתובת ולסיסמה).
 
    הסיסמה נבדקת כאן בדפדפן בלבד (לא מול שרת) - זהו מחסום נוחות למניעת
    הצצה אקראית, לא הגנה אמיתית. היא נשמרת ב-localStorage כדי שלא יהיה
@@ -23,12 +23,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const refreshBtn = document.getElementById('refresh-btn');
   const logoutBtn = document.getElementById('logout-btn');
 
+  const tabOrders = document.getElementById('tab-orders');
+  const tabCatalog = document.getElementById('tab-catalog');
+  const ordersPanel = document.getElementById('orders-panel');
+  const catalogPanel = document.getElementById('catalog-panel');
+  const catalogEditList = document.getElementById('catalog-edit-list');
+
   const DELIVERY_LABELS = {
     pickup: 'איסוף עצמי',
     delivery: 'משלוח',
   };
 
-  // ---------- ניסיון כניסה אוטומטי אם כבר יש סיסמה שמורה בדפדפן הזה ----------
+  /* ---------- מעבר בין לשונית הזמנות ללשונית עריכת קטלוג ---------- */
+  tabOrders.addEventListener('click', () => switchTab('orders'));
+  tabCatalog.addEventListener('click', () => switchTab('catalog'));
+
+  function switchTab(tab) {
+    const isOrders = tab === 'orders';
+    tabOrders.classList.toggle('is-active', isOrders);
+    tabCatalog.classList.toggle('is-active', !isOrders);
+    tabOrders.setAttribute('aria-selected', String(isOrders));
+    tabCatalog.setAttribute('aria-selected', String(!isOrders));
+    ordersPanel.hidden = !isOrders;
+    catalogPanel.hidden = isOrders;
+
+    if (!isOrders && !catalogEditList.dataset.loaded) {
+      loadCatalogForEditing();
+    }
+  }
+
+  /* ---------- ניסיון כניסה אוטומטי אם כבר יש סיסמה שמורה בדפדפן הזה ---------- */
   const savedPassword = localStorage.getItem('ns-admin-password');
   if (savedPassword === ADMIN_PASSWORD) {
     loadOrders();
@@ -58,6 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
     passwordInput.value = '';
     passwordInput.focus();
   });
+
+  /* ===================== הזמנות ===================== */
 
   async function loadOrders() {
     try {
@@ -134,7 +160,16 @@ document.addEventListener('DOMContentLoaded', () => {
         ? `${escapeHtml(order.appleMessage)} <small>(${escapeHtml(order.appleStyle || 'עם ציור')})</small>`
         : '-';
 
+      const isPending = order.status === 'ממתין לאישור';
+      let statusCell = isPending
+        ? `<span class="badge badge-pending">ממתין לאישור</span>`
+        : `<span class="badge badge-confirmed">מאושר</span>`;
+      if (isPending) {
+        statusCell += `<button type="button" class="approve-btn" data-order-ref="${escapeHtml(order.orderRef)}">אשר הזמנה</button>`;
+      }
+
       row.innerHTML = `
+        <td>${statusCell}</td>
         <td>${escapeHtml(order.orderRef)}</td>
         <td>${formatDateTime(order.submittedAt)}</td>
         <td>${escapeHtml(order.fullName)}</td>
@@ -150,6 +185,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
       ordersTbody.appendChild(row);
     });
+
+    ordersTbody.querySelectorAll('.approve-btn').forEach((btn) => {
+      btn.addEventListener('click', () => approveOrder(btn));
+    });
+  }
+
+  async function approveOrder(button) {
+    const orderRef = button.dataset.orderRef;
+    button.disabled = true;
+    button.textContent = 'מאשר...';
+
+    try {
+      const response = await fetch(GOOGLE_SHEETS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'updateOrderStatus',
+          secret: GOOGLE_SHEETS_SECRET,
+          orderRef,
+          status: 'מאושר',
+        }),
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || 'שגיאה באישור ההזמנה');
+      loadOrders();
+    } catch (err) {
+      alert('שגיאה באישור ההזמנה. נסו שוב.');
+      button.disabled = false;
+      button.textContent = 'אשר הזמנה';
+    }
   }
 
   function formatDateTime(isoString) {
@@ -174,11 +239,173 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // מניעת הזרקת HTML זדוני - כל טקסט שמגיע מהזמנה עובר בריחה לפני הצגה
+  /* ===================== עריכת קטלוג ===================== */
+
+  async function loadCatalogForEditing() {
+    catalogEditList.innerHTML = '<p class="catalog-loading">טוען קטלוג...</p>';
+
+    try {
+      const response = await fetch(GOOGLE_SHEETS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'getCatalog', secret: GOOGLE_SHEETS_SECRET }),
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || 'שגיאה בטעינת הקטלוג');
+
+      catalogEditList.dataset.loaded = 'true';
+      renderCatalogEditor(data.items);
+    } catch (err) {
+      catalogEditList.innerHTML = '<p class="catalog-loading">שגיאה בטעינת הקטלוג. נסו לרענן את הדף.</p>';
+    }
+  }
+
+  function renderCatalogEditor(items) {
+    catalogEditList.innerHTML = '';
+
+    items.forEach((item) => {
+      const card = document.createElement('div');
+      card.className = 'catalog-edit-card';
+
+      const imageHtml = item.imageUrl
+        ? `<img src="${escapeHtmlAttr(item.imageUrl)}" alt="${escapeHtmlAttr(item.name)}" />`
+        : `<div class="card-photo-placeholder" aria-hidden="true">🍫🍷</div>`;
+
+      card.innerHTML = `
+        ${imageHtml}
+        <h3>${escapeHtml(item.name)}</h3>
+
+        <div>
+          <label for="price-${escapeHtmlAttr(item.id)}">מחיר</label>
+          <input type="text" id="price-${escapeHtmlAttr(item.id)}" class="edit-price" value="${escapeHtmlAttr(item.price)}" />
+        </div>
+
+        <div>
+          <label for="desc-${escapeHtmlAttr(item.id)}">תיאור</label>
+          <textarea id="desc-${escapeHtmlAttr(item.id)}" class="edit-description">${escapeHtml(item.description)}</textarea>
+        </div>
+
+        <div>
+          <label for="photo-${escapeHtmlAttr(item.id)}">החלפת תמונה</label>
+          <input type="file" id="photo-${escapeHtmlAttr(item.id)}" class="edit-photo" accept="image/*" />
+        </div>
+
+        <div class="catalog-edit-actions">
+          <button type="button" class="btn btn-primary save-catalog-item-btn">שמירה</button>
+          <span class="catalog-edit-status"></span>
+        </div>
+      `;
+
+      card.dataset.itemId = item.id;
+      catalogEditList.appendChild(card);
+
+      card.querySelector('.save-catalog-item-btn').addEventListener('click', () => saveCatalogItem(card, item.id));
+    });
+  }
+
+  async function saveCatalogItem(card, id) {
+    const statusEl = card.querySelector('.catalog-edit-status');
+    const saveBtn = card.querySelector('.save-catalog-item-btn');
+    const price = card.querySelector('.edit-price').value.trim();
+    const description = card.querySelector('.edit-description').value.trim();
+    const photoInput = card.querySelector('.edit-photo');
+    const photoFile = photoInput.files[0];
+
+    saveBtn.disabled = true;
+    statusEl.textContent = 'שומר...';
+    statusEl.className = 'catalog-edit-status';
+
+    try {
+      // שלב 1: עדכון מחיר ותיאור
+      const updateResponse = await fetch(GOOGLE_SHEETS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'updateCatalogItem',
+          secret: GOOGLE_SHEETS_SECRET,
+          id,
+          fields: { price, description },
+        }),
+      });
+      const updateData = await updateResponse.json();
+      if (!updateData.success) throw new Error(updateData.error || 'שגיאה בעדכון הפריט');
+
+      // שלב 2: העלאת תמונה חדשה אם נבחרה
+      if (photoFile) {
+        statusEl.textContent = 'מעלה תמונה...';
+        const { base64, mimeType } = await resizeImageToBase64(photoFile);
+
+        const uploadResponse = await fetch(GOOGLE_SHEETS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'uploadCatalogImage',
+            secret: GOOGLE_SHEETS_SECRET,
+            id,
+            imageBase64: base64,
+            mimeType,
+          }),
+        });
+        const uploadData = await uploadResponse.json();
+        if (!uploadData.success) throw new Error(uploadData.error || 'שגיאה בהעלאת התמונה');
+
+        const img = card.querySelector('img, .card-photo-placeholder');
+        if (img) {
+          const newImg = document.createElement('img');
+          newImg.src = uploadData.imageUrl;
+          newImg.alt = card.querySelector('h3').textContent;
+          img.replaceWith(newImg);
+        }
+        photoInput.value = '';
+      }
+
+      statusEl.textContent = '✓ נשמר בהצלחה';
+      statusEl.className = 'catalog-edit-status is-success';
+    } catch (err) {
+      statusEl.textContent = 'שגיאה בשמירה, נסו שוב';
+      statusEl.className = 'catalog-edit-status is-error';
+    } finally {
+      saveBtn.disabled = false;
+    }
+  }
+
+  // מקטין ודוחס תמונה בדפדפן לפני שליחה (עד 1000px ברוחב), כדי שההעלאה
+  // תהיה מהירה והתמונות בקטלוג יהיו אחידות בגודל
+  function resizeImageToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('שגיאה בקריאת הקובץ'));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('שגיאה בטעינת התמונה'));
+        img.onload = () => {
+          const maxDimension = 1000;
+          const scale = Math.min(1, maxDimension / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          const base64 = dataUrl.split(',')[1];
+          resolve({ base64, mimeType: 'image/jpeg' });
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // מניעת הזרקת HTML זדוני - כל טקסט שמגיע מהזמנה/קטלוג עובר בריחה לפני הצגה
   function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str ?? '';
     return div.innerHTML;
+  }
+
+  function escapeHtmlAttr(str) {
+    return String(str ?? '').replace(/"/g, '&quot;');
   }
 
 });

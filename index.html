@@ -116,56 +116,11 @@
         <h2 id="catalog-title">הקטלוג שלנו</h2>
         <p class="section-subtitle">בחרו את המגש המתאים לאירוע שלכם — ואפשר תמיד להתאים אישית</p>
 
-        <div class="catalog-grid">
-
-          <!-- כרטיס: מגש 30 ס"מ -->
-          <article class="card">
-            <img class="card-photo" src="img/tray-30.jpg" alt="מגש פירות עגול בקוטר 30 ס״מ, מבחר פירות טריים בסידור צבעוני" loading="lazy" />
-            <h3>מגש 30 ס"מ</h3>
-            <p>מבחר פירות עונתיים טריים, סידור צבעוני ונקי - מתאים לאירוח משפחתי או ביקור קטן.</p>
-            <p class="price">₪230</p>
-          </article>
-
-          <!-- כרטיס: מגש 35 ס"מ -->
-          <article class="card">
-            <img class="card-photo" src="img/tray-35.jpg" alt="מגש פירות עגול בקוטר 35 ס״מ עם קישוטי אפרסמון ואגוזים" loading="lazy" />
-            <h3>מגש 35 ס"מ</h3>
-            <p>מגש גדול יותר עם מבחר פירות עשיר וקישוטים נוספים - מתאים לאירוח בינוני ואירועים.</p>
-            <p class="price">₪280</p>
-          </article>
-
-          <!-- כרטיס: מגש 40 ס"מ -->
-          <article class="card">
-            <img class="card-photo" src="img/tray-40.jpg" alt="מגש פירות עגול גדול בקוטר 40 ס״מ עם תמרים ממולאים באגוזי מלך" loading="lazy" />
-            <h3>מגש 40 ס"מ</h3>
-            <p>המגש הגדול שלנו - מבחר פירות עשיר ומרשים במיוחד, מושלם לאירועים גדולים ואירוח חשוב.</p>
-            <p class="price">₪350</p>
-          </article>
-
-          <!-- כרטיס: מגש לב -->
-          <article class="card">
-            <img class="card-photo" src="img/tray-heart.jpg" alt="מגש פירות בצורת לב, מבחר פירות טריים בסידור חגיגי" loading="lazy" />
-            <h3>מגש לב</h3>
-            <p>מגש בצורת לב מיוחדת ורומנטית - מושלם למסיבת רווקות, יום נישואין או כל הפתעה מהלב.</p>
-            <p class="price">₪280</p>
-          </article>
-
-          <!-- כרטיס: תוספת מיוחדת - עדיין ללא תמונה אמיתית, יש להחליף כשתישלח תמונה -->
-          <article class="card">
-            <div class="card-photo card-photo-placeholder" aria-hidden="true">🍫🍷</div>
-            <h3>תוספת מיוחדת</h3>
-            <p>רוצים להוסיף למגש עוד משהו מיוחד? שוקולד, יין, או כל תוספת אחרת - ספרו לנו ונתאים בשמחה.</p>
-            <p class="price">מחיר לפי בקשה</p>
-          </article>
-
-          <!-- כרטיס: עיצוב אישי -->
-          <article class="card card-custom">
-            <img class="card-photo" src="img/tray-custom.jpg" alt="תפוח חקוק בעבודת יד עם הקדשה אישית ״מזל טוב״, קישוט לדוגמה למגש בעיצוב אישי" loading="lazy" />
-            <h3>עיצוב אישי</h3>
-            <p>רוצים משהו ייחודי? נעצב מגש אישי בהתאמה לשם, גיל או נושא לבחירתכם, כולל תפוחים חקוקים - ספרו לנו ונדאג לשאר.</p>
-            <p class="price">מחיר בהתאמה אישית</p>
-          </article>
-
+        <!-- הכרטיסים נטענים דינמית מגוגל שיטס (ראו js/script.js -> renderCatalog).
+             ככה נטע יכולה לערוך מחירים/תיאורים/תמונות בעצמה מהדשבורד שלה,
+             בלי לגעת בקוד. loading-hint מוצג עד שהנתונים מגיעים. -->
+        <div class="catalog-grid" id="catalog-grid">
+          <p class="catalog-loading">טוען קטלוג...</p>
         </div>
       </div>
     </section>
@@ -232,13 +187,9 @@
 
           <div class="form-row">
             <label for="tray-type">סוג מגש <span class="required" aria-hidden="true">*</span></label>
+            <!-- האפשרויות נטענות דינמית מאותו קטלוג שמוצג למעלה (ראו js/script.js) -->
             <select id="tray-type" name="tray-type" required aria-required="true">
               <option value="" disabled selected>בחרו סוג מגש</option>
-              <option value="מגש 30 ס&quot;מ">מגש 30 ס"מ - ₪230</option>
-              <option value="מגש 35 ס&quot;מ">מגש 35 ס"מ - ₪280</option>
-              <option value="מגש 40 ס&quot;מ">מגש 40 ס"מ - ₪350</option>
-              <option value="מגש לב">מגש לב - ₪280</option>
-              <option value="עיצוב אישי">עיצוב אישי - מחיר בהתאמה אישית</option>
             </select>
           </div>
 
@@ -364,6 +315,12 @@
             <h3>ההזמנה נשלחה בהצלחה!</h3>
             <p>תודה <strong id="conf-name"></strong>, קיבלנו את ההזמנה שלך.</p>
             <p>מספר אסמכתא: <strong id="conf-ref"></strong></p>
+
+            <!-- מוצג רק כשהתאריך קרוב ולכן ההזמנה ממתינה לאישור ידני של נטע -->
+            <div id="conf-pending-banner" class="pending-banner" hidden>
+              <strong>⏳ ההזמנה ממתינה לאישור</strong>
+              <p>התאריך שבחרתם קרוב, ולכן נטע תאשר את ההזמנה באופן אישי בהקדם. היא תיצור איתכם קשר טלפוני לאישור סופי.</p>
+            </div>
 
             <dl class="confirmation-summary">
               <div><dt>סוג מגש:</dt><dd id="conf-tray"></dd></div>

@@ -60,6 +60,35 @@
   margin: 0;
 }
 
+/* ---------- לשוניות ניווט (הזמנות / עריכת קטלוג) ---------- */
+.admin-tabs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.admin-tab {
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-olive);
+  background-color: transparent;
+  color: var(--color-olive-dark);
+  font-weight: 600;
+  cursor: pointer;
+  font: inherit;
+}
+
+.admin-tab.is-active {
+  background-color: var(--color-olive);
+  color: var(--color-white);
+}
+
+.admin-logout {
+  margin-inline-start: auto;
+}
+
 /* ---------- מסך הזמנות ---------- */
 .orders-toolbar {
   display: flex;
@@ -138,4 +167,122 @@
 .badge-delivery {
   background-color: var(--color-peach-bg);
   color: var(--color-peach);
+}
+
+.badge-pending {
+  background-color: var(--color-rose-light);
+  color: #A22C2C;
+}
+
+.badge-confirmed {
+  background-color: #E4EFD9;
+  color: var(--color-olive-dark);
+}
+
+.approve-btn {
+  display: block;
+  margin-top: 6px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  border: none;
+  background-color: var(--color-peach);
+  color: var(--color-white);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.approve-btn:hover {
+  background-color: #B15F16;
+}
+
+.approve-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ---------- עריכת קטלוג ---------- */
+.catalog-edit-hint {
+  color: var(--color-text-soft);
+  margin: 0;
+}
+
+.catalog-edit-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+@media (min-width: 768px) {
+  .catalog-edit-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.catalog-edit-card {
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.catalog-edit-card img,
+.catalog-edit-card .card-photo-placeholder {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.catalog-edit-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.catalog-edit-card label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-olive-dark);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.catalog-edit-card input[type="text"],
+.catalog-edit-card textarea {
+  width: 100%;
+  font: inherit;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(86, 100, 59, 0.3);
+  background-color: var(--color-cream);
+}
+
+.catalog-edit-card textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.catalog-edit-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.catalog-edit-status {
+  font-size: 0.85rem;
+  color: var(--color-text-soft);
+}
+
+.catalog-edit-status.is-success {
+  color: var(--color-olive-dark);
+  font-weight: 600;
+}
+
+.catalog-edit-status.is-error {
+  color: #A22C2C;
+  font-weight: 600;
 }
