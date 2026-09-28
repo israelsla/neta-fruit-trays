@@ -48,6 +48,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* ---------- 3.2 בדיקת תקינות מספר טלפון עם הודעה ברורה ---------- */
+  const phoneInput = document.getElementById('phone');
+  if (phoneInput) {
+    phoneInput.addEventListener('input', () => {
+      if (phoneInput.value && phoneInput.validity.patternMismatch) {
+        phoneInput.setCustomValidity('מספר טלפון לא תקין - יש להזין מספר ישראלי, לדוגמה 050-1234567');
+      } else {
+        phoneInput.setCustomValidity('');
+      }
+    });
+  }
+
   function isSaturday(dateString) {
     if (!dateString) return false;
     const date = new Date(`${dateString}T00:00:00`);
