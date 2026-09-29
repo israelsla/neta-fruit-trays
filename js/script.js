@@ -274,13 +274,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       try {
-        // בדיקת מכסה יומית - כמה מגשים כבר הוזמנו לאותו תאריך אירוע
+        // מכסה יומית תלוית זמן: הזמנה קרובה (עד AUTO_APPROVE_DAYS) מוגבלת
+        // יותר, הזמנה רחוקה מקבלת מכסה גבוהה יותר כי יש זמן להתארגן
+        const dailyCap = isEventDateSoon(orderPayload.eventDate)
+          ? MAX_TRAYS_PER_DAY_SOON
+          : MAX_TRAYS_PER_DAY_ADVANCE;
+
         const alreadyOrdered = await getOrderedQuantityForDate(orderPayload.eventDate);
         const requestedQty = Number(orderPayload.quantity) || 1;
 
-        if (alreadyOrdered + requestedQty > MAX_TRAYS_PER_DAY) {
-          const remaining = Math.max(MAX_TRAYS_PER_DAY - alreadyOrdered, 0);
-          alert(`מצטערים, ליום ${formatDateHebrew(orderPayload.eventDate)} ניתן להזמין עד ${MAX_TRAYS_PER_DAY} מגשים בסה"כ (נותרו ${remaining} מגשים פנויים ליום זה). אנא הקטינו את הכמות, בחרו תאריך אחר, או צרו קשר טלפוני לבדיקת אפשרות מיוחדת.`);
+        if (alreadyOrdered + requestedQty > dailyCap) {
+          const remaining = Math.max(dailyCap - alreadyOrdered, 0);
+          alert(`מצטערים, ליום ${formatDateHebrew(orderPayload.eventDate)} ניתן להזמין עד ${dailyCap} מגשים בסה"כ (נותרו ${remaining} מגשים פנויים ליום זה). אנא הקטינו את הכמות, בחרו תאריך אחר, או צרו קשר טלפוני לבדיקת אפשרות מיוחדת.`);
           return;
         }
 
