@@ -105,7 +105,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const orders = data.orders.map(normalizeEventDate);
       // החדשות ביותר קודם
-      orders.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+      // הזמנות "ממתין לאישור" תמיד למעלה, כדי שלא יפוספסו בין כל השאר;
+      // בתוך כל קבוצה - החדשות ביותר קודם
+      orders.sort((a, b) => {
+        const aPending = a.status === 'ממתין לאישור' ? 0 : 1;
+        const bPending = b.status === 'ממתין לאישור' ? 0 : 1;
+        if (aPending !== bPending) return aPending - bPending;
+        return new Date(b.submittedAt) - new Date(a.submittedAt);
+      });
       renderOrders(orders);
     } catch (err) {
       loginError.textContent = 'שגיאה בטעינת ההזמנות. בדקו את החיבור לאינטרנט ונסו שוב.';

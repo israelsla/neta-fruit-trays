@@ -574,6 +574,11 @@ textarea {
   box-shadow: var(--shadow-soft);
 }
 
+.conf-whatsapp-btn {
+  margin-inline-end: 10px;
+  margin-bottom: 10px;
+}
+
 .confirmation-icon {
   font-size: 2.6rem;
   margin-bottom: 6px;

@@ -42,10 +42,34 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isSaturday(eventDateInput.value)) {
         eventDateInput.setCustomValidity('לא ניתן להזמין ליום שבת - אנא בחרו תאריך אחר');
         eventDateInput.reportValidity();
+        document.getElementById('date-availability-hint').textContent = '';
       } else {
         eventDateInput.setCustomValidity('');
+        updateDateAvailabilityHint();
       }
     });
+  }
+
+  // מציג ליד שדה התאריך כמה מגשים עוד פנויים ליום שנבחר, לפני שהלקוח בכלל
+  // מנסה לשלוח - כדי לחסוך ניסיון-וטעייה מול המכסה היומית
+  async function updateDateAvailabilityHint() {
+    const hintEl = document.getElementById('date-availability-hint');
+    const dateValue = eventDateInput.value;
+    if (!hintEl || !dateValue) return;
+
+    hintEl.textContent = 'בודק זמינות...';
+
+    try {
+      const dailyCap = isEventDateSoon(dateValue) ? MAX_TRAYS_PER_DAY_SOON : MAX_TRAYS_PER_DAY_ADVANCE;
+      const alreadyOrdered = await getOrderedQuantityForDate(dateValue);
+      const remaining = Math.max(dailyCap - alreadyOrdered, 0);
+
+      hintEl.textContent = remaining > 0
+        ? `נשארו ${remaining} מגשים פנויים ליום זה (מתוך ${dailyCap})`
+        : 'מצטערים, יום זה מלא - נסו תאריך אחר או התקשרו אלינו';
+    } catch (err) {
+      hintEl.textContent = '';
+    }
   }
 
   /* ---------- 3.2 בדיקת תקינות מספר טלפון עם הודעה ברורה ---------- */
@@ -364,6 +388,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const pendingBanner = document.getElementById('conf-pending-banner');
     pendingBanner.hidden = order.status !== 'ממתין לאישור';
+
+    const whatsappLink = document.getElementById('conf-whatsapp-link');
+    if (whatsappLink) {
+      const message = `שלום, שלחתי הזמנה מספר ${orderRef} (${order.trayType}, לתאריך ${formatDateHebrew(order.eventDate)}). אשמח לתיאום.`;
+      whatsappLink.href = `https://wa.me/${BUSINESS_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    }
 
     const isDelivery = order.deliveryMethod === 'delivery';
     const deliveryText = isDelivery

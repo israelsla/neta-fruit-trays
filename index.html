@@ -215,7 +215,9 @@
               name="event-date"
               required
               aria-required="true"
+              aria-describedby="date-availability-hint"
             />
+            <small id="date-availability-hint" class="field-hint" aria-live="polite"></small>
           </div>
 
           <!-- אופן קבלת ההזמנה: איסוף עצמי (ללא עלות) או משלוח (בתוספת תשלום לפי אזור) -->
@@ -340,6 +342,9 @@
               </p>
               <p>נטע תיצור איתך קשר טלפוני בהקדם לאישור סופי של ההזמנה והפרטים.</p>
             </div>
+
+            <!-- קישור וואטסאפ עם הודעה מוכנה מראש, מוגדר דינמית ב-showConfirmation -->
+            <a id="conf-whatsapp-link" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary conf-whatsapp-btn">💬 שליחת הודעת וואטסאפ לנטע</a>
 
             <button type="button" id="new-order-btn" class="btn btn-secondary">יצירת הזמנה חדשה</button>
           </div>
